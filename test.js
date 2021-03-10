@@ -51,4 +51,13 @@ assert.equal(false, day.isWorkingDay());
 day.add(2, "days");
 assert.equal(true, day.isWorkingDay());
 
+assert.equal(moment("26/12/2020", "DD/MM/YYYY").isFerie("75"), false);
+assert.equal(moment("26/12/2020", "DD/MM/YYYY").isFerie("57"), true);
+assert.equal(moment("26/12/2020", "DD/MM/YYYY").isFerie("67"), true);
+assert.equal(moment("26/12/2020", "DD/MM/YYYY").isFerie("68"), true);
+assert.equal(moment("26/12/2020", "DD/MM/YYYY").isFerie("56"), false);
+assert.equal(moment("26/12/2020", "DD/MM/YYYY").isFerie(), false);
+
+assert.equal(day.getFerieList("2020", 57)[day.getFerieList("2020", 57).length - 1].name, 'Saint-Étienne');
+
 process.exit(0);

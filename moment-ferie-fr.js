@@ -106,6 +106,13 @@
       return moment("25-12-" + Y, "DD-MM-YYYY");
     };
 
+    moment.fn.saintEtienne = function (Y) {
+      if (Y === undefined) {
+        Y = this.year();
+      }
+      return moment("26-12-" + Y, "DD-MM-YYYY");
+    };
+
     var listeFerie = {
       "Jour de l'an": moment.fn.jourDeLAn,
       "Fête du travail": moment.fn.feteDuTravail,
@@ -121,7 +128,7 @@
       "Pentecôte": moment.fn.pentecote
     };
 
-    moment.fn.getFerieList = function (Y) {
+    moment.fn.getFerieList = function (Y, departement) {
       if (Y === undefined) {
         Y = this.year();
       }
@@ -132,13 +139,24 @@
           res.push({name: key, date: listeFerie[key](Y) });
         }
       }
+
+      if (departement !== undefined && ["57", "67", "68"].indexOf(""+departement) !== -1) {
+        res.push({name: "Saint-Étienne", date: moment.fn.saintEtienne(Y)});
+      }
+
       return res;
     };
 
-    moment.fn.getFerie = function () {
+    moment.fn.getFerie = function (departement) {
+      if (departement !== undefined && ["57", "67", "68"].indexOf(""+departement) !== -1) {
+        listeFerie["Saint-Étienne"] = moment.fn.saintEtienne;
+      } else if (listeFerie["Saint-Étienne"]) {
+        delete listeFerie["Saint-Étienne"];
+      }
+
       for (var key in listeFerie) {
         if (listeFerie.hasOwnProperty(key)) {
-          if (this.isSame(listeFerie[key].call(this), 'days')) {
+          if (this.isSame(listeFerie[key].call(this), "days")) {
             return key;
           }
         }
@@ -146,8 +164,8 @@
       return null;
     };
 
-    moment.fn.isFerie = function () {
-      return (this.getFerie() !== null);
+    moment.fn.isFerie = function (departement) {
+      return (this.getFerie(departement) !== null);
     };
 
     moment.fn.isWeekEnd = function () {
